@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Speech to Text</title>
 </head>
 
@@ -9,14 +11,19 @@
 
     <h1>Speech to Text</h1>
 
-    <p>Assignment 1</p>
+    <p id="status">Ready to record</p>
 
-    <button>Start Recording</button>
-    <button disabled>Stop Recording</button>
+    <button id="startButton">Start Recording</button>
+    <button id="stopButton" disabled>Stop Recording</button>
 
     <h2>Transcription</h2>
 
-    <p>Transcription appear here</p>
+    <p id="transcription">
+        Your transcription will appear here.
+    </p>
+
+    <script src="script.js"></script>
 
 </body>
+
 </html>
