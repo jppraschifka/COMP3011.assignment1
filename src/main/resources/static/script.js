@@ -21,20 +21,22 @@ startButton.addEventListener("click", async () => {
             audioChunks.push(event.data);
         });
 
-        mediaRecorder.addEventListener("stop", () => {
+		mediaRecorder.addEventListener("stop", async () => {
 
-            const audioBlob = new Blob(audioChunks, {
-                type: mediaRecorder.mimeType
-            });
+		    const audioBlob = new Blob(audioChunks, {
+		        type: mediaRecorder.mimeType
+		    });
 
-            console.log("Recording complete");
-            console.log("Audio type:", audioBlob.type);
-            console.log("Audio size:", audioBlob.size);
+		    console.log("Recording complete");
+		    console.log("Audio type:", audioBlob.type);
+		    console.log("Audio size:", audioBlob.size);
 
-            stream.getTracks().forEach(track => track.stop());
+		    stream.getTracks().forEach(track => track.stop());
 
-            statusText.textContent = "Recording complete";
-        });
+		    statusText.textContent = "Uploading audio...";
+
+		    await uploadAudio(audioBlob);
+		});
 
         mediaRecorder.start();
 
@@ -61,3 +63,38 @@ stopButton.addEventListener("click", () => {
         stopButton.disabled = true;
     }
 });
+
+async function uploadAudio(audioBlob) {
+
+    const formData = new FormData();
+
+    formData.append(
+        "file",
+        audioBlob,
+        "recording.webm"
+    );
+
+    try {
+
+        const response = await fetch("/api/v1/transcribe", {
+            method: "POST",
+            body: formData
+        });
+
+        const result = await response.text();
+
+        if (!response.ok) {
+            throw new Error(result);
+        }
+
+        console.log("Server response:", result);
+
+        statusText.textContent = "Audio uploaded successfully";
+
+    } catch (error) {
+
+        console.error("Upload error:", error);
+
+        statusText.textContent = "Audio upload failed";
+    }
+}
