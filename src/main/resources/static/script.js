@@ -2,6 +2,9 @@ const startButton = document.getElementById("startButton");
 const stopButton = document.getElementById("stopButton");
 const statusText = document.getElementById("status");
 
+const transcriptionText =
+    document.getElementById("transcription");
+
 let mediaRecorder;
 let audioChunks = [];
 
@@ -55,7 +58,8 @@ startButton.addEventListener("click", async () => {
 
 stopButton.addEventListener("click", () => {
 
-    if (mediaRecorder && mediaRecorder.state === "recording") {
+    if (mediaRecorder &&
+        mediaRecorder.state === "recording") {
 
         mediaRecorder.stop();
 
@@ -87,14 +91,19 @@ async function uploadAudio(audioBlob) {
             throw new Error(result);
         }
 
-        console.log("Server response:", result);
+        transcriptionText.textContent = result;
 
-        statusText.textContent = "Audio uploaded successfully";
+        statusText.textContent = "Ready to record";
 
     } catch (error) {
 
-        console.error("Upload error:", error);
+        console.error("Transcription error:", error);
 
-        statusText.textContent = "Audio upload failed";
+        statusText.textContent = "Transcription failed";
+
+    } finally {
+
+        startButton.disabled = false;
+        stopButton.disabled = true;
     }
 }
